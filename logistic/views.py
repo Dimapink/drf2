@@ -19,4 +19,4 @@ class StockViewSet(ModelViewSet):
     serializer_class = StockSerializer
 
     filter_backends = [filters.SearchFilter]
-    search_fields = ["products__title"]
+    search_fields = ["products__title", "products__description"]

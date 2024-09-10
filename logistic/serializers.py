@@ -1,3 +1,5 @@
+from email.policy import default
+
 from rest_framework import serializers
 
 from logistic.models import *
@@ -35,12 +37,17 @@ class StockSerializer(serializers.ModelSerializer):
             StockProduct.objects.create(stock=stock, **position)
         return stock
 
-    def update_or_create(self, instance, validated_data):
+    def update(self, instance, validated_data):
         positions = validated_data.pop('positions')
+        a = instance
 
         # обновляем склад по его параметрам
         stock = super().update(instance, validated_data)
         for position in positions:
-            StockProduct.objects.update_or_create(stock=stock, **position)
+            StockProduct.objects.update_or_create(stock=stock, product=position.get("product"),
+                                                  defaults={
+                                                      "quantity":position.get("quantity"),
+                                                      "price": position.get("price")
+                                                  })
         return stock
 
